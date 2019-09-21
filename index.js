@@ -1,11 +1,5 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const app = require('./app')
+const dotenv = require('dotenv')
+dotenv.config({ path: './env/.env' })
 
-// endpoints be like
-const alive = require('./root/alive')
-
-app.get('/', (req, res) => (res.send('why are you here')))
-app.get('/alive', alive)
-
-app.listen(port, () => console.log(`listening on ${port}`))
+app.listen(process.env.PORT, () => console.log(`Listening on ${process.env.PORT}`))

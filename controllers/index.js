@@ -1,7 +1,7 @@
 module.exports = function (r) {
   const f = require('fs').readdirSync('./controllers')
   f.forEach((f) => {
-    if (f == 'index.js') return
+    if (f === 'index.js') return
     try {
       r.use(`/${f.split('.')[0]}/`, require(`./${f}`))
       console.log(`Added ${f} to routes.`)
