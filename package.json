@@ -4,7 +4,7 @@
   "description": "Big Brother is Watching",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/test.js --exit"
   },
   "repository": {
     "type": "git",
@@ -20,11 +20,13 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.4.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^6.2.0"
   }
 }
