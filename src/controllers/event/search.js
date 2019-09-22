@@ -17,6 +17,7 @@ router.get('', function (req, res, next) {
     res.json(data)
     next()
   }).catch(err => {
+    /* istanbul ignore next */
     res.status(500)
     next(new Error(err))
   })

@@ -19,6 +19,10 @@ router.get('/:id', function (req, res, next) {
     } else {
       res.json(event)
     }
+  }).catch(err => {
+    /* istanbul ignore next */
+    res.status(500)
+    next(new Error(err))
   })
 }) // TODO Setup global error handling with a wrapper function
 
