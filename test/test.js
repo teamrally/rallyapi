@@ -119,18 +119,6 @@ describe('Bulkevent route', function () {
       })
   })
 
-  it('Should return zero events outside parameters', function (done) {
-    requester.get('/bulkEvent')
-      .set('startDate', '01-02-2000')
-      .set('endDate', '01-01-2002')
-      .end(function (err, res) {
-        expect(err).to.equal(null)
-        expect(res.status).to.equal(200)
-        expect(res.body.length).to.equal(0)
-        done()
-      })
-  })
-
   it('Should return the correct events', function (done) {
     requester.get('/event/search')
       .set('startDate', '01-02-2003')
