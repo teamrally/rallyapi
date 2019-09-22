@@ -13,17 +13,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'))
 }
 
-// Allows use to catch exceptions inside promises when used in express controllers
-// see https://strongloop.com/strongblog/async-error-handling-expressjs-es7-promises-generators/
-global.wrap = fn => (...args) => {
-  const functionReturnVal = fn(...args)
-
-  const isPromise = typeof functionReturnVal.catch !== 'undefined'
-  if (isPromise) {
-    functionReturnVal.catch(args[2])
-  }
-}
-
 const errorMiddleware = (err, req, res, next) => {
   // TODO Add logging of non-validation errors
   if (err) res.json(err.message)
