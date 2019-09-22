@@ -105,6 +105,18 @@ describe('Bulkevent route', function () {
     mongoose.connection.dropCollection('events')
   })
 
+  it('Should validate the date inputs', function (done) {
+    requester.get('/event/search')
+      .set('startDate', 'yareyaredaze')
+      .set('endDate', '01-01-2002')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(400)
+        expect(res.body).to.equal('Missing parameters')
+        done()
+      })
+  })
+
   it('Should return zero events outside parameters', function (done) {
     requester.get('/event/search')
       .set('startDate', '01-02-2000')

@@ -8,7 +8,7 @@ router.get('', function (req, res, next) {
   const startDate = new Date(req.headers.startdate)
   const endDate = new Date(req.headers.enddate)
 
-  if (!startDate || !endDate) {
+  if (isNaN(startDate.getTime()) || isNaN(startDate.getTime())) {
     res.status(400)
     next(new Error('Missing parameters'))
   }
