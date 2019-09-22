@@ -2,6 +2,7 @@ const chai = require('chai')
 const expect = chai.expect
 const chaiHttp = require('chai-http')
 const chaiAsPromised = require('chai-as-promised')
+const sinon = require('sinon')
 
 chai.use(chaiHttp)
 chai.use(chaiAsPromised)
@@ -139,5 +140,20 @@ describe('Bulkevent route', function () {
         expect(res.body.length).to.equal(3)
         done()
       })
+  })
+})
+
+describe('Promise error handling', function (done) {
+  before(async function () {
+    this.stub = sinon.stub(console, 'error')
+    this.promise = new Promise((resolve, reject) => { reject(new Error('test')) }) // RACE CONDITION
+  })
+
+  after(function () {
+    this.stub.restore()
+  })
+
+  it('should catch a thrown Promise error', async function () {
+    expect(this.stub.called).to.equal(true)
   })
 })
