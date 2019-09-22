@@ -68,7 +68,7 @@ describe('Event route', function () {
   })
 
   it('Should return 403 error without an ID', function (done) {
-    requester.get('/event/by-id')
+    requester.get('/event/view')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(400)
@@ -78,7 +78,7 @@ describe('Event route', function () {
   })
 
   it('Should return 404 error with an invalid ID', function (done) {
-    requester.get('/event/by-id/null')
+    requester.get('/event/view/null')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(404)
@@ -88,7 +88,7 @@ describe('Event route', function () {
   })
 
   it('Should return the correct event', function (done) {
-    requester.get('/event/by-id/1')
+    requester.get('/event/view/1')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
@@ -109,7 +109,7 @@ describe('Bulkevent route', function () {
 
   it('Should validate the date inputs', function (done) {
     requester.get('/event/search')
-      .set('startDate', 'yareyaredaze')
+      .set('startDate', '僕は糞いです') // don't beat yourself up unit tests ur perfect <3
       .set('endDate', '01-01-2002')
       .end(function (err, res) {
         expect(err).to.equal(null)
