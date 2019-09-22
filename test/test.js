@@ -10,6 +10,7 @@ process.env.srcRoot = require('path').resolve('./src')
 process.env.NODE_ENV = 'test'
 
 const mongoose = require('mongoose')
+const models = require(process.env.srcRoot + '/db')
 
 const setupDatabase = () => {
   const dbName = 'data_test'
@@ -37,12 +38,43 @@ describe('General health', function () {
 })
 
 describe('Event route', function () {
+  before(function (done) {
+    const event = new models.Event({ id: '1', name: 'testevent', date: new Date(), description: 'testeventdesc' })
+    event.save(function (err) {
+      if (err) console.error(err)
+      done()
+    })
+  })
+  after(async function () {
+    mongoose.connection.dropCollection('events')
+  })
+
   it('Should return 403 error without an ID', function (done) {
     requester.get('/event')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(400)
         expect(res.body).to.equal('Missing ID parameter')
+        done()
+      })
+  })
+
+  it('Should return 404 error with an invalid ID', function (done) {
+    requester.get('/event/2')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(404)
+        expect(res.body).to.equal('Invalid ID')
+        done()
+      })
+  })
+
+  it('Should return the correct event', function (done) {
+    requester.get('/event/1')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal('1')
         done()
       })
   })
