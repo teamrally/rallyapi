@@ -12,8 +12,7 @@ module.exports = function (r) {
     try {
       r.use(`/${f.split('.')[0]}/`, require(`./${f}`))
       console.log(`Added ${f} to routes.`)
-    } catch (e) {
-      /* istanbul ignore next */
+    } catch (e) /* istanbul ignore next */ {
       console.error(`Error loading ${f}:  ${e.stack}`)
     }
   })

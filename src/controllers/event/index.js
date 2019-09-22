@@ -13,8 +13,7 @@ module.exports = function (r) {
     try {
       r.use(`/event/${f.split('.')[0]}/`, require(`./${f}`))
       console.log(`Added event/${f} to routes.`)
-    } catch (e) {
-      /* istanbul ignore next */
+    } catch (e) /* istanbul ignore next */ {
       console.error(`Error loading ${f}:  ${e.stack}`)
     }
   })
