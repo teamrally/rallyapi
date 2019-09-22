@@ -16,7 +16,7 @@ router.get('', function (req, res, next) {
   Event.find({ date: { $gte: startDate.toISOString(), $lte: endDate.toISOString() } }).then((data) => {
     res.json(data)
     next()
-  }).catch(err => {
+  }).catch(/* istanbul ignore next */err => {
     res.status(500)
     next(new Error(err))
   })

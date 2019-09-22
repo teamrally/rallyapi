@@ -20,5 +20,9 @@ const setupDatabase = () => {
   return mongoose.connect(`mongodb://${process.env.MONGO}:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
 }
 
-setupDatabase()
+setupDatabase().catch((err) => {
+  console.error('Database error encountered:\n' + err.message + '. Shutting down...')
+  process.exit(1)
+})
+
 app.listen(process.env.PORT, () => console.log(`Listening on ${process.env.PORT}`))
