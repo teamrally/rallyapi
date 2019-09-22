@@ -109,7 +109,7 @@ describe('Bulkevent route', function () {
 
   it('Should validate the date inputs', function (done) {
     requester.get('/event/search')
-      .set('startDate', '僕は糞いです') // don't beat yourself up unit tests ur perfect <3
+      .set('startDate', 'i suck') // don't beat yourself up unit tests ur perfect <3
       .set('endDate', '01-01-2002')
       .end(function (err, res) {
         expect(err).to.equal(null)
