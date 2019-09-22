@@ -2,11 +2,13 @@ const chai = require('chai')
 const expect = chai.expect
 const chaiHttp = require('chai-http')
 const chaiAsPromised = require('chai-as-promised')
+const dotenv = require('dotenv')
 
 chai.use(chaiHttp)
 chai.use(chaiAsPromised)
 
 process.env.srcRoot = require('path').resolve('./src')
+dotenv.config({ path: process.env.srcRoot + '/env/test.env' })
 process.env.NODE_ENV = 'test'
 
 const mongoose = require('mongoose')
@@ -17,7 +19,7 @@ const setupDatabase = () => {
 
   // mongoose.set('debug', true);
 
-  return mongoose.connect(`mongodb://localhost:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
+  return mongoose.connect(`mongodb://${process.env.MONGO}:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
 }
 
 setupDatabase()
