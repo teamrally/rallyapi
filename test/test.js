@@ -24,6 +24,20 @@ const setupDatabase = () => {
 
 setupDatabase()
 
+async function createRandomEvents (amount, dateStart, dateEnd) {
+  const start = new Date('01-01-2003')
+  const end = new Date('01-01-2004')
+
+  await models.Event.create({ id: 2, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+  await models.Event.create({ id: 3, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+  await models.Event.create({ id: 4, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+}
+
+function randomDate (start, end) {
+  var date = new Date(+start + Math.random() * (end - start))
+  return date
+}
+
 const app = require('../src/app')
 
 const requester = chai.request(app).keepOpen()
@@ -62,7 +76,7 @@ describe('Event route', function () {
   })
 
   it('Should return 404 error with an invalid ID', function (done) {
-    requester.get('/event/2')
+    requester.get('/event/null')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(404)
@@ -77,6 +91,40 @@ describe('Event route', function () {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
         expect(res.body.id).to.equal('1')
+        done()
+      })
+  })
+})
+
+describe('Bulkevent route', function () {
+  before(function (done) {
+    createRandomEvents().then(done).catch(console.error)
+  })
+
+  after(async function () {
+    mongoose.connection.dropCollection('events')
+  })
+
+  it('Should return zero events outside parameters', function (done) {
+    requester.get('/bulkEvent')
+      .set('startDate', '01-02-2000')
+      .set('endDate', '01-01-2002')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(200)
+        expect(res.body.length).to.equal(0)
+        done()
+      })
+  })
+
+  it('Should return the correct events', function (done) {
+    requester.get('/bulkEvent')
+      .set('startDate', '01-02-2003')
+      .set('endDate', '01-01-2004')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(200)
+        expect(res.body.length).to.equal(3)
         done()
       })
   })
