@@ -1,17 +1,12 @@
 const express = require('express')
 const cors = require('cors')
-const morgan = require('morgan')
 
 process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason.stack)
+  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason.stack)
   // application specific logging, throwing an error, or other logic here
 })
 
 const app = express()
-
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('combined'))
-}
 
 const errorMiddleware = (err, req, res, next) => {
   // TODO Add logging of non-validation errors

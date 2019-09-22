@@ -2,12 +2,14 @@ const chai = require('chai')
 const expect = chai.expect
 const chaiHttp = require('chai-http')
 const chaiAsPromised = require('chai-as-promised')
-const dotenv = require('dotenv')
+const sinon = require('sinon')
 
 chai.use(chaiHttp)
 chai.use(chaiAsPromised)
 
 process.env.srcRoot = require('path').resolve('./src')
+
+const dotenv = require('dotenv')
 dotenv.config({ path: process.env.srcRoot + '/env/test.env' })
 process.env.NODE_ENV = 'test'
 
@@ -66,7 +68,7 @@ describe('Event route', function () {
   })
 
   it('Should return 403 error without an ID', function (done) {
-    requester.get('/event')
+    requester.get('/event/by-id')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(400)
@@ -76,7 +78,7 @@ describe('Event route', function () {
   })
 
   it('Should return 404 error with an invalid ID', function (done) {
-    requester.get('/event/null')
+    requester.get('/event/by-id/null')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(404)
@@ -86,7 +88,7 @@ describe('Event route', function () {
   })
 
   it('Should return the correct event', function (done) {
-    requester.get('/event/1')
+    requester.get('/event/by-id/1')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
@@ -105,6 +107,18 @@ describe('Bulkevent route', function () {
     mongoose.connection.dropCollection('events')
   })
 
+  it('Should validate the date inputs', function (done) {
+    requester.get('/event/search')
+      .set('startDate', 'yareyaredaze')
+      .set('endDate', '01-01-2002')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(400)
+        expect(res.body).to.equal('Missing parameters')
+        done()
+      })
+  })
+
   it('Should return zero events outside parameters', function (done) {
     requester.get('/bulkEvent')
       .set('startDate', '01-02-2000')
@@ -118,7 +132,7 @@ describe('Bulkevent route', function () {
   })
 
   it('Should return the correct events', function (done) {
-    requester.get('/bulkEvent')
+    requester.get('/event/search')
       .set('startDate', '01-02-2003')
       .set('endDate', '01-01-2004')
       .end(function (err, res) {
@@ -127,5 +141,20 @@ describe('Bulkevent route', function () {
         expect(res.body.length).to.equal(3)
         done()
       })
+  })
+})
+
+describe('Promise error handling', function (done) {
+  before(async function () {
+    this.stub = sinon.stub(console, 'error')
+    this.promise = new Promise((resolve, reject) => { reject(new Error('test')) }) // RACE CONDITION
+  })
+
+  after(function () {
+    this.stub.restore()
+  })
+
+  it('should catch a thrown Promise error', async function () {
+    expect(this.stub.called).to.equal(true)
   })
 })
