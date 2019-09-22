@@ -8,6 +8,7 @@ chai.use(chaiHttp)
 chai.use(chaiAsPromised)
 
 process.env.srcRoot = require('path').resolve('./src')
+dotenv.config({ path: process.env.srcRoot + '/env/test.env' })
 process.env.NODE_ENV = 'test'
 const dotenv = require('dotenv')
 dotenv.config({ path: `${process.env.srcRoot}/env/test.env` })
@@ -117,9 +118,9 @@ describe('Bulkevent route', function () {
         done()
       })
   })
-
+  
   it('Should return zero events outside parameters', function (done) {
-    requester.get('/event/search')
+    requester.get('/bulkEvent')
       .set('startDate', '01-02-2000')
       .set('endDate', '01-01-2002')
       .end(function (err, res) {
@@ -157,3 +158,4 @@ describe('Promise error handling', function (done) {
     expect(this.stub.called).to.equal(true)
   })
 })
+

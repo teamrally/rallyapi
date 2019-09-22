@@ -8,9 +8,6 @@ process.on('unhandledRejection', (reason, p) => {
 
 const app = express()
 
-// Allows use to catch exceptions inside promises when used in express controllers
-// see https://strongloop.com/strongblog/async-error-handling-expressjs-es7-promises-generators/
-
 const errorMiddleware = (err, req, res, next) => {
   // TODO Add logging of non-validation errors
   if (err) res.json(err.message)
