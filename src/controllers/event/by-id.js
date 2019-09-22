@@ -19,7 +19,7 @@ router.get('/:id', function (req, res, next) {
     } else {
       res.json(event)
     }
-  }).catch(err => /* istanbul ignore next */ {
+  }).catch(/* istanbul ignore next */ err => {
     res.status(500)
     next(new Error(err))
   })
