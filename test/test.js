@@ -8,6 +8,8 @@ chai.use(chaiAsPromised)
 
 process.env.srcRoot = require('path').resolve('./src')
 process.env.NODE_ENV = 'test'
+const dotenv = require('dotenv')
+dotenv.config({ path: `${process.env.srcRoot}/env/test.env` })
 
 const mongoose = require('mongoose')
 const models = require(process.env.srcRoot + '/db')
@@ -17,7 +19,7 @@ const setupDatabase = () => {
 
   // mongoose.set('debug', true);
 
-  return mongoose.connect(`mongodb://localhost:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
+  return mongoose.connect(`mongodb://${process.env.MONGO}:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
 }
 
 setupDatabase()
@@ -64,7 +66,7 @@ describe('Event route', function () {
   })
 
   it('Should return 403 error without an ID', function (done) {
-    requester.get('/event')
+    requester.get('/event/by-id')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(400)
@@ -74,7 +76,7 @@ describe('Event route', function () {
   })
 
   it('Should return 404 error with an invalid ID', function (done) {
-    requester.get('/event/null')
+    requester.get('/event/by-id/null')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(404)
@@ -84,7 +86,7 @@ describe('Event route', function () {
   })
 
   it('Should return the correct event', function (done) {
-    requester.get('/event/1')
+    requester.get('/event/by-id/1')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
@@ -104,7 +106,7 @@ describe('Bulkevent route', function () {
   })
 
   it('Should return zero events outside parameters', function (done) {
-    requester.get('/bulkEvent')
+    requester.get('/event/search')
       .set('startDate', '01-02-2000')
       .set('endDate', '01-01-2002')
       .end(function (err, res) {
@@ -116,7 +118,7 @@ describe('Bulkevent route', function () {
   })
 
   it('Should return the correct events', function (done) {
-    requester.get('/bulkEvent')
+    requester.get('/event/search')
       .set('startDate', '01-02-2003')
       .set('endDate', '01-01-2004')
       .end(function (err, res) {
