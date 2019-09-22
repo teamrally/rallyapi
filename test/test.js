@@ -30,9 +30,9 @@ async function createRandomEvents (amount, dateStart, dateEnd) {
   const start = new Date('01-01-2003')
   const end = new Date('01-01-2004')
 
-  await models.Event.create({ id: 2, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
-  await models.Event.create({ id: 3, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
-  await models.Event.create({ id: 4, name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+  await models.Event.create({ name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+  await models.Event.create({ name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
+  await models.Event.create({ name: Math.random().toString(), date: randomDate(start, end), description: Math.random().toString() })
 }
 
 function randomDate (start, end) {
@@ -56,10 +56,14 @@ describe('General health', function () {
 })
 
 describe('Event route', function () {
+  let data
+
   before(function (done) {
-    const event = new models.Event({ id: '1', name: 'testevent', date: new Date(), description: 'testeventdesc' })
-    event.save(function (err) {
+    const event = new models.Event({ _id: '53cb6b9b4f4ddef1ad47f943', name: 'testevent', date: new Date(), description: 'testeventdesc' })
+    event.save(function (err, dataN) {
       if (err) console.error(err)
+
+      data = dataN
       done()
     })
   })
@@ -77,8 +81,18 @@ describe('Event route', function () {
       })
   })
 
+  it('Should return 404 error with an invalid ID format', function (done) {
+    requester.get('/event/by-id/' + 'nigerundayo')
+      .end(function (err, res) {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(400)
+        expect(res.body).to.equal('Invalid ID format')
+        done()
+      })
+  })
+
   it('Should return 404 error with an invalid ID', function (done) {
-    requester.get('/event/by-id/null')
+    requester.get('/event/by-id/' + '53cb6b9b4f4ddef1ad47f944')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(404)
@@ -88,11 +102,11 @@ describe('Event route', function () {
   })
 
   it('Should return the correct event', function (done) {
-    requester.get('/event/by-id/1')
+    requester.get('/event/by-id/' + data._id.toString())
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
-        expect(res.body.id).to.equal('1')
+        expect(res.body._id).to.equal(data._id.toString())
         done()
       })
   })
