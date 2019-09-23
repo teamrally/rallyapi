@@ -114,6 +114,7 @@ describe('Event route', function () {
   it('Should create an event like a good boy', (done) => {
     requester.post('/event/view/')
       .set('secret', 'nigerundayo')
+      .set('Content-Type', 'application/json')
       .send({ name: "expose the president's search history", date: randomDate('01-01-2003', '01-01-2004') })
       .end((err, res) => {
         expect(err).to.equal(null)
