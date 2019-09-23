@@ -82,7 +82,7 @@ describe('Event route', function () {
   })
 
   it('Should return 404 error with an invalid ID format', function (done) {
-    requester.get('/event/by-id/' + 'nigerundayo')
+    requester.get('/event/view/' + 'nigerundayo')
       .end(function (err, res) {
         expect(err).to.equal(null)
         expect(res.status).to.equal(400)
@@ -107,6 +107,17 @@ describe('Event route', function () {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
         expect(res.body._id).to.equal(data._id.toString())
+        done()
+      })
+  })
+
+  it('Should create an event like a good boy', (done) => {
+    requester.post('/event/view/')
+      .set('secret', 'nigerundayo')
+      .send({ name: "expose the president's search history", date: randomDate('01-01-2003', '01-01-2004') })
+      .end((err, res) => {
+        expect(err).to.equal(null)
+        expect(res.status).to.equal(200)
         done()
       })
   })

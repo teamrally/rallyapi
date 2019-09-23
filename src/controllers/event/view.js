@@ -29,19 +29,17 @@ const validate = (body) => {
 }
 
 router.post('/', async (req, res, next) => {
-  if (req.headers.prettyplease === false) {
+  if (req.headers.secret !== process.env.SECRET) {
     res.status(403)
-    next(new Error("You didn't say the magic word")) // TODO actually auth for this
-  }
-
-  if (!validate(req.body)) {
+    next(new Error('Invalid auth')) // TODO actually auth for this
+  } else if (!validate(req.body)) {
     res.status(400)
-    next(new Error('Your request body sucks'))
+    next(new Error('Invalid request body'))
+  } else {
+    await Event.create({ name: req.body.name, date: req.body.date, description: req.body.description })
+    res.status(200)
+    res.end('ok')
   }
-
-  await Event.create({ name: req.body.name, date: req.body.date, description: req.body.description })
-  res.status(200)
-  res.end('ok')
 })
 
 module.exports = router
