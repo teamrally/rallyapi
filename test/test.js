@@ -115,7 +115,7 @@ describe('Event route', function () {
     requester.post('/event/view/')
       .set('secret', 'nigerundayo')
       .set('Content-Type', 'application/json')
-      .send({ name: "expose the president's search history", date: randomDate('01-01-2003', '01-01-2004') })
+      .send({ name: "expose the president's search history", date: randomDate('01-01-2003', '01-01-2004'), description: 'yeet' })
       .end((err, res) => {
         expect(err).to.equal(null)
         expect(res.status).to.equal(200)
